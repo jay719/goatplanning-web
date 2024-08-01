@@ -1,12 +1,13 @@
 export class Trip {
-  constructor(ownerIds, memberIds, title, description, destination, requirements, date, status) {
+  constructor(ownerIds, memberIds, title, description, destination, requirements, startDate, endDate, status) {
     this.ownerIds = ownerIds;
     this.memberIds = memberIds;
     this.title = title;
     this.description = description;
     this.destination = destination;
     this.requirements = requirements; // {id: {category: '...', description: '...'}}
-    this.date = date;
+    this.startDate = startDate;
+    this.endDate = endDate;
     this.status = status;
     this.id = Math.random().toString(36).substr(2, 9); // Generate a unique ID
   }

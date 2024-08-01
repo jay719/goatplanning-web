@@ -13,7 +13,8 @@ export const initializeTrips = () => {
         1: { category: 'Budget', description: '2000 USD' },
         2: { category: 'Clothing', description: 'Light and comfortable' }
       },
-      new Date('2024-08-15'),
+      new Date('2024-08-15'), // Start date
+      new Date('2024-08-25'), // End date
       'Planned'
     ),
     new Trip(
@@ -27,7 +28,8 @@ export const initializeTrips = () => {
         1: { category: 'Budget', description: '3000 USD' },
         2: { category: 'Clothing', description: 'Casual' }
       },
-      new Date('2024-09-01'),
+      new Date('2024-09-01'), // Start date
+      new Date('2024-09-10'), // End date
       'Planned'
     ),
     new Trip(
@@ -40,7 +42,8 @@ export const initializeTrips = () => {
         0: { category: 'Budget', description: '1500 USD' },
         1: { category: 'Clothing', description: 'Warm clothes' }
       },
-      new Date('2024-07-31'),
+      new Date('2024-07-31'), // Start date
+      new Date('2024-08-02'), // End date
       'Completed'
     )
   ];
