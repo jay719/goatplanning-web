@@ -28,8 +28,8 @@ const HomePage = ({ user, trips }) => {
         alignItems: 'center' 
       }}
     >
-      <Typography variant="h4" component="h1" gutterBottom>
-        Welcome to GoatPlanning
+      <Typography variant="h4" component="h1" gutterBottom sx={{textAlign: "center"}}>
+        Welcome to Goat Planning
       </Typography>
       <Button 
         variant="contained" 

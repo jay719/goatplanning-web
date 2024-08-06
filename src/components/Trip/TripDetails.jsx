@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import TripOwnerActions from './help/TripOwnerActions';
-import TripMemberActions from './help/TripMemberActions';
-import TripMemberManagement from './help/TripMemberManagement';
+import TripOwnerActions from './help/actions/TripOwnerActions';
+import TripMemberActions from './help/actions/TripMemberActions';
+import TripMemberManagement from './help/actions/TripMemberManagement';
 
 const TripDetails = ({ user, trips }) => {
   const { tripId } = useParams();
   const [tripDetails, setTripDetails] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [inviteLink, setInviteLink] = useState('');
+ 
 
   useEffect(() => {
     if (trips && user) {
@@ -18,6 +20,7 @@ const TripDetails = ({ user, trips }) => {
       if (trip) {
         setTripDetails(trip);
         setIsOwner(trip.ownerIds && trip.ownerIds.includes(user.id));
+        generateInviteLink(trip)
       }
     }
   }, [tripId, trips, user]);
@@ -25,6 +28,12 @@ const TripDetails = ({ user, trips }) => {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+  const generateInviteLink = (trip) => {
+    console.log(trip,"triiiippp")
+    const newInviteLink = `http://yourapp.com/join-trip/${trip.title.replace(/\s+/g, '-').toLowerCase()}`; // fix later
+    setInviteLink(newInviteLink);
+  }
 
   if (!tripDetails) return <Typography>Trip not found</Typography>;
 
@@ -40,6 +49,13 @@ const TripDetails = ({ user, trips }) => {
       <Typography variant="body1" gutterBottom>
         Destination: {tripDetails.destination}
       </Typography>
+      <Typography variant="body1" gutterBottom>
+        Start Date: {tripDetails.startDate.toLocaleDateString()}
+      </Typography>
+     
+      <Typography variant="body1" gutterBottom>
+        End Date: {tripDetails.endDate.toLocaleDateString()}
+      </Typography>
       <Typography variant="body2" gutterBottom>
         Requirements:
       </Typography>
@@ -52,6 +68,11 @@ const TripDetails = ({ user, trips }) => {
           </li>
         ))}
       </ul>
+        <div> {inviteLink && (
+              <Typography variant="body1" sx={{ marginTop: 2 }}>
+                Share this invite link: <a href={inviteLink}>{inviteLink}</a>
+              </Typography>
+            )}</div>
 
       {/* Owner Actions */}
       {isOwner && (
@@ -84,7 +105,7 @@ const TripDetails = ({ user, trips }) => {
       </Accordion>
 
       {/* Member Actions */}
-      <Accordion sx={{ marginTop: 4,  }} expanded={expanded === 'member-actions'} onChange={handleChange('member-actions')}>
+      <Accordion sx={{ marginTop: 4 }} expanded={expanded === 'member-actions'} onChange={handleChange('member-actions')}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="member-actions-content"

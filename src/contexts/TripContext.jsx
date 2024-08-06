@@ -1,6 +1,5 @@
-// src/contexts/TripContext.jsx
 import React, { createContext, useState, useContext } from 'react';
-import { initializeTrips } from '../data/tripData'; // Adjust import path as needed
+import { initializeTrips } from '../data/tripsData'; // Adjust import path as needed
 
 const TripContext = createContext();
 
@@ -20,7 +19,7 @@ export const TripProvider = ({ children }) => {
   };
 
   return (
-    <TripContext.Provider value={{ user, trips, fetchUserTrips, login }}>
+    <TripContext.Provider value={{ user, trips, setTrips, fetchUserTrips, login }}>
       {children}
     </TripContext.Provider>
   );

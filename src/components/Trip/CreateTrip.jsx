@@ -1,28 +1,30 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useTripContext } from '../../contexts/TripContext';
+import { Trip } from '../../classes/TripClass';
 
-const CreateTrip = ({ user }) => {
-  const [step, setStep] = useState(1); // Step 1: Initial details, Step 2: Members and requirements
+const CreateTrip = () => {
+  const { user, trips, setTrips } = useTripContext();
+  const [step, setStep] = useState(1);
   const [tripTitle, setTripTitle] = useState('');
   const [destination, setDestination] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [inviteLink, setInviteLink] = useState('');
   const [members, setMembers] = useState([]);
   const [newMember, setNewMember] = useState('');
   const [requirements, setRequirements] = useState([]);
   const [newRequirement, setNewRequirement] = useState({ category: '', description: '' });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleCreateTrip = () => {
+  const handleContinue = () => {
     setStep(2);
-    const newInviteLink = `http://yourapp.com/join-trip/${tripTitle.replace(/\s+/g, '-').toLowerCase()}`;
-    setInviteLink(newInviteLink);
-    console.log(`Trip created by: ${user.email}`);
   };
 
   const handleAddMember = () => {
@@ -47,6 +49,35 @@ const CreateTrip = ({ user }) => {
     setRequirements(requirements.filter((_, i) => i !== index));
   };
 
+  const finalizeTrip = () => {
+    if (!tripTitle || !startDate) {
+      setError('Title and Start Date are required');
+      return;
+    }
+
+    // Convert dates to YYYY-MM-DD format
+    const formattedStartDate = startDate ? startDate.format('YYYY-MM-DD') : null;
+    const formattedEndDate = endDate ? endDate.format('YYYY-MM-DD') : null;
+
+    const newTrip = new Trip(
+      [user.id],
+      members,
+      tripTitle,
+      description,
+      destination,
+      requirements.reduce((acc, req, idx) => {
+        acc[idx] = req;
+        return acc;
+      }, {}),
+      new Date(formattedStartDate),
+      formattedEndDate ? new Date(formattedEndDate) : null,
+      'Active'
+    );
+
+    setTrips([...trips, newTrip]);
+    navigate(`/trip/${newTrip.id}`);
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Container maxWidth="sm" sx={{ marginTop: 8 }}>
@@ -57,7 +88,7 @@ const CreateTrip = ({ user }) => {
             </Typography>
             <form>
               <TextField
-                label="Trip Title"
+                label="Trip Title*"
                 fullWidth
                 margin="normal"
                 value={tripTitle}
@@ -80,7 +111,7 @@ const CreateTrip = ({ user }) => {
                 onChange={(e) => setDescription(e.target.value)}
               />
               <DatePicker
-                label="Start Date"
+                label="Start Date*"
                 value={startDate}
                 onChange={(newValue) => setStartDate(newValue)}
                 renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
@@ -91,7 +122,8 @@ const CreateTrip = ({ user }) => {
                 onChange={(newValue) => setEndDate(newValue)}
                 renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
               />
-              <Button variant="contained" color="primary" onClick={handleCreateTrip} sx={{ marginTop: 2 }}>
+              {error && <Typography color="error">{error}</Typography>}
+              <Button variant="contained" color="primary" onClick={handleContinue} sx={{ marginTop: 2 }}>
                 Continue
               </Button>
             </form>
@@ -165,14 +197,9 @@ const CreateTrip = ({ user }) => {
             <Button variant="contained" color="primary" onClick={() => setStep(1)} sx={{ marginTop: 2 }}>
               Back
             </Button>
-            <Button variant="contained" color="primary" sx={{ marginTop: 2, marginLeft: 2 }}>
+            <Button variant="contained" color="primary" onClick={finalizeTrip} sx={{ marginTop: 2, marginLeft: 2 }}>
               Finish
             </Button>
-            {inviteLink && (
-              <Typography variant="body1" sx={{ marginTop: 2 }}>
-                Share this invite link: <a href={inviteLink}>{inviteLink}</a>
-              </Typography>
-            )}
           </Box>
         )}
       </Container>

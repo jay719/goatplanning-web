@@ -7,10 +7,11 @@ import CreateTrip from './components/Trip/CreateTrip';
 import JoinTrip from './components/Trip/JoinTrip';
 import TripDetails from './components/Trip/TripDetails';
 import { initializeTrips } from './data/tripsData'; // Import initialization function
+import { useTripContext } from './contexts/TripContext';
 
 const App = () => {
-  const [user, setUser] = useState(null);
-  const [trips, setTrips] = useState([]);
+ 
+  const { user, trips, setTrips } = useTripContext(); // Use context to get user and setTrips
 
   useEffect(() => {
     if (user) {
@@ -19,27 +20,17 @@ const App = () => {
     }
   }, [user]);
 
-  const handleLogin = (email, password) => {
-    // Fake user data
-    const fakeUser = {
-      id: 'user1',
-      email,
-    };
-    setUser(fakeUser);
-  };
 
-  const handleSignup = (email, password) => {
-    // Simulate signup
-    setUser({ id: 'user1', email });
-  };
+
+
 
   return (
     <Router>
       <Routes>
         <Route path="/" element={user ? <HomePage user={user} trips={trips} /> : <Navigate to="/login" />} />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/signup" element={<Signup onSignup={handleSignup} />} />
-        <Route path="/create-trip" element={user ? <CreateTrip user={user} /> : <Navigate to="/login" />} />
+        <Route path="/login" element={<Login  />} />
+        <Route path="/signup" element={<Signup  />} />
+        <Route path="/create-trip" element={user ? <CreateTrip user={user} setTrips={setTrips}/> : <Navigate to="/login" />} />
         <Route path="/join-trip" element={user ? <JoinTrip user={user} /> : <Navigate to="/login" />} />
         <Route path="/trip/:tripId" element={user ? <TripDetails user={user} trips={trips} /> : <Navigate to="/login" />} />
       </Routes>

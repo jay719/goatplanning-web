@@ -15,7 +15,7 @@ const Signup = ({ onSignup }) => {
   return (
     <Container maxWidth="sm" sx={{ marginTop: 8 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Signup
+       Sign Up
       </Typography>
       <form>
         <TextField

@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography } from '@mui/material';
+import { TextField, Button, Container, Typography, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useTripContext } from '../../contexts/TripContext';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const {login } = useTripContext(); // Use context to get user and setTrips
 
   const handleLogin = () => {
-    onLogin(email, password);
+    login(email, password);
     navigate('/'); // Redirect to homepage after login
   };
-
+  const navSignUp = () => {
+    navigate('/signup');
+  }
   return (
     <Container maxWidth="sm" sx={{ marginTop: 8 }}>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -33,10 +37,14 @@ const Login = ({ onLogin }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button variant="contained" color="primary" onClick={handleLogin} sx={{ marginTop: 2 }}>
+        <Button fullWidth={true} variant="contained" color="primary" onClick={handleLogin} sx={{ marginTop: 2}}>
           Login
         </Button>
+        
       </form>
+      <Typography variant="subtitle1" gutterBottom sx={{marginTop: 2}}>
+      Don't have an account? <Link href="/signup">Sign Up</Link>
+        </Typography>
     </Container>
   );
 };
